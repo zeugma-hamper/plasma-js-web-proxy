@@ -1,0 +1,5 @@
+location /plasma/ {
+  proxy_pass  http://localhost:57571/;
+  proxy_buffering off;
+}
+

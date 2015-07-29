@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+var parseArgs = require('minimist');
+var ProxyServer = require('../server.js');
+
+var argv = parseArgs(process.argv);
+
+new ProxyServer({
+  port: argv.port,
+  hostname: argv.host,
+  logLevel: argv['log-level']
+});
+
