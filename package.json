@@ -20,9 +20,10 @@
   "scripts": {
     "run-server": "node server/bin/plasma-web-proxy",
     "watch-server": "nodemon server/bin/plasma-web-proxy",
-    "build-client-js": "browserify client/plasma.js -o public/plasma.js --debug",
-    "watch-client-js": "watchify client/plasma.js -o public/plasma.js --debug",
-    "build-client-js:min": "browserify client/plasma.js | uglifyjs > public/plasma.min.js "
+    "build-client-js": "mkdir -p public && browserify client/plasma.js -o public/plasma.js --debug",
+    "watch-client-js": "mkdir -p public && watchify client/plasma.js -o public/plasma.js --debug",
+    "build-client-js:min": "mkdir -p public && browserify client/plasma.js | uglifyjs > public/plasma.min.js ",
+    "build": "npm run build-client-js && npm run build-client-js:min"
   }
 }
 
