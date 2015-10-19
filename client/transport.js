@@ -23,7 +23,7 @@ Transport.ready = function(callback) {
   }
 };
 
-var sock = new SockJS('/plasma/sockjs');
+var sock = new SockJS('/plasma-web-proxy/sockjs');
 
 sock.onopen = function() {
   ready = true;
