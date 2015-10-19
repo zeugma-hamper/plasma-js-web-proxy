@@ -1,0 +1,17 @@
+Source: oblong-plasma-web-proxy
+Section: non-free/misc
+Priority: extra
+Maintainer: buildtools <buildtools@oblong.com>
+Build-Depends: debhelper (>= 7),
+   build-essential,
+   nodejs (>= 0.10),
+Standards-Version: 3.8.3
+Vcs-Git: git.oblong.com:/ob/git/repo/plasma-web-proxy.git
+
+Package: oblong-plasma-web-proxy
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+	 nodejs (>= 0.10),
+	 oblong-system-protist3.21,
+Description: Allows listening / depositing to pools via an HTTP and Websocket interface.
