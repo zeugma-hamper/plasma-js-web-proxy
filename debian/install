@@ -1,7 +1,0 @@
-client opt/oblong/plasma-web-proxy3.21
-server opt/oblong/plasma-web-proxy3.21
-public opt/oblong/plasma-web-proxy3.21
-node_modules opt/oblong/plasma-web-proxy3.21
-package.json opt/oblong/plasma-web-proxy3.21
-protocol.js opt/oblong/plasma-web-proxy3.21
-README.md opt/oblong/plasma-web-proxy3.21
