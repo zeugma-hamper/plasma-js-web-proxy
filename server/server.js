@@ -14,9 +14,11 @@ var DEFAULT_HOST = 'localhost';
 var DEFAULT_LOGLEVEL = 'info';
 
 function ProxyServer(opts) {
+  opts = opts || {};
   this.port = opts.port || DEFAULT_PORT;
   this.hostname = opts.host || DEFAULT_HOST;
   this.logLevel = opts.logLevel || DEFAULT_LOGLEVEL;
+  this.registrar = new Registrar();
 
   log.level = this.logLevel;
 
@@ -27,13 +29,13 @@ function ProxyServer(opts) {
   };
 
   var poolListen = function(conn, pool) {
-    Registrar.registerClientToPool(conn, pool);
+    this.registrar.registerClientToPool(conn, pool);
     conn.write(JSON.stringify([true, message.reqId]));
-  };
+  }.bind(this);
 
   var poolUnlisten = function(conn, pool) {
-    Registrar.deregisterClientFromPool(conn, pool);
-  };
+    this.registrar.deregisterClientFromPool(conn, pool);
+  }.bind(this);
 
   var sockServer = sockjs.createServer();
 
@@ -65,9 +67,9 @@ function ProxyServer(opts) {
 
     conn.on('close', function() {
       log.info('Client "%s" disconnected', conn.id);
-      Registrar.deregisterClientFromAllPools(conn);
-    });
-  });
+      this.registrar.deregisterClientFromAllPools(conn);
+    }.bind(this));
+  }.bind(this));
 
   var static_directory = new node_static.Server(__dirname + '/../public');
 

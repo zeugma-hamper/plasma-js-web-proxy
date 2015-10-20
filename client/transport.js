@@ -52,7 +52,7 @@ Transport.send = function(obj) {
   }
 
   sock.send(str);
-}
+};
 
 Transport.onMessage = function(cb) {
   emitter.addListener('message', cb);
