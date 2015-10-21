@@ -46,7 +46,7 @@ module.exports = {
   unlistenPool: function(poolName) {
     return {
       action: ACTIONS.POOL_UNLISTEN,
-      data: poolName
+      pool: poolName
     };
   },
 
