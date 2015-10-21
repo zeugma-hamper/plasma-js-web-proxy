@@ -1,13 +1,11 @@
-var Request = require('./request');
-var Router = require('./router');
 var _ = require('underscore');
 
 // param can be Hose.WR_ONLY to only write to the pool
 // and not listen in on anything.
-var Hose = function(pool, param, onReady) {
+var Hose = function(requester, poolListener, pool, param, onReady) {
   // Legacy Plasma.Hose was not a constructor
   if (!(this instanceof Hose)) {
-    return new Hose(pool, param, onReady);
+    return new Hose(Plasma, pool, param, onReady);
   }
 
   if (param && param !== Hose.WR_ONLY) {
@@ -15,16 +13,28 @@ var Hose = function(pool, param, onReady) {
   }
 
   this.pool = pool;
+  this._requester = requester;
+  this._listeners = [];
+
   this.writeOnly = param && (param === Hose.WR_ONLY);
   // Only listen if we don't have a WR_ONLY passed in
-
   if (!this.writeOnly) {
-    Request.Connect(this.pool, onReady);
+    poolListener.addPoolListener(
+      this.pool,
+      _.bind(this.onProtein, this),
+      onReady
+    );
   }
 };
 
+Hose.prototype.onProtein = function(protein) {
+  _.each(this._listeners, function(listener) {
+    listener(protein);
+  });
+};
+
 Hose.prototype.deposit = function(protein) {
-  return Request.Deposit(this.pool, protein);
+  return this._requester.Deposit(this.pool, protein);
 };
 
 Hose.prototype._await = function(callback) {
@@ -32,30 +42,37 @@ Hose.prototype._await = function(callback) {
     throw new Error('Hose for pool "' + this.pool + '" was instantiated as write-only and cannot be awaited');
   }
 
-  return Router.listenToPool(this.pool, callback);
+  this._listeners.push(callback);
 };
 
 Hose.prototype._unawait = function(callback) {
-  Router.unlistenToPool(this.pool, callback);
+  var index = this._listeners.indexOf(callback);
+  if (index === -1) {
+    return false;
+  }
+  this._listeners.splice(index, 1);
+  return true;
 };
 
 // Allows user callbacks to be traced to the altered callback used for
 // filtering and awaitNext'ing.
 Hose.prototype._addAlteredCallback = function(srcCallback, dstCallback) {
-  this.alteredCallbacks = this.alteredCallbacks || [];
-  this.alteredCallbacks.push({
+  this._alteredCallbacks = this._alteredCallbacks || [];
+  this._alteredCallbacks.push({
     src: srcCallback,
     dst: dstCallback
   });
 };
 
 Hose.prototype._pullAlteredCallback = function(srcCallback) {
-  var itemIndex =  _.findIndex(this.alteredCallbacks, function(item) {
+  if (!this._alteredCallbacks) return undefined;
+
+  var itemIndex =  _.findIndex(this._alteredCallbacks, function(item) {
     return item.src === srcCallback;
   });
 
   if (itemIndex !== -1) {
-    return this.alteredCallbacks.splice(itemIndex, 1)[0].dst;
+    return this._alteredCallbacks.splice(itemIndex, 1)[0].dst;
   } else {
     return undefined;
   }
@@ -97,21 +114,18 @@ Hose.prototype.awaitNext = function(matchDescrips, callback) {
     that.unawait(deregCallback);
   };
 
-  this._addAlteredCallback(callback, deregCallback);
+  this._addAlteredCallback(cb, deregCallback);
   this.await(matchDescrips, deregCallback);
 };
 
 Hose.prototype.unawait = function(callback) {
-  var alteredCallback = (
-    this.alteredCallbacks &&
-    this._pullAlteredCallback(callback)
-  );
+  var alteredCallback = this._pullAlteredCallback(callback);
 
   if (alteredCallback) {
     // await was called with filters and/or awaitNext
-    this.unawait(alteredCallback);
+    return this.unawait(alteredCallback);
   } else {
-    this._unawait(callback);
+    return this._unawait(callback);
   }
 };
 
