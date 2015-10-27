@@ -37,12 +37,13 @@ Requester.prototype.satisfy = function(reqId, data) {
   delete this.listeners[reqId];
 };
 
-Requester.prototype.request = function(data, callback) {
-  var reqID = makeUniqueId();
-  data.reqId = reqID;
+Requester.prototype._request = function(getData, callback) {
+  var reqId = makeUniqueId();
+
+  var data = getData(reqId);
 
   if (callback) {
-    this.register(reqID, callback);
+    this.register(reqId, callback);
   }
 
   this.transport.send(data);
@@ -52,21 +53,34 @@ Requester.prototype.consume = function(data) {
   this.satisfy(data[1], data);
 };
 
-Requester.prototype.connect = function(pool, onReady) {
-  this.request(Protocol.listenPool(pool), onReady);
-}
+Requester.prototype.connect = function(pool, callback) {
+  this._request(function(reqId) {
+    return Protocol.listenPool(pool, reqId);
+  }, callback);
+};
 
-Requester.prototype.disconnect = function(pool) {
-  this.request(Protocol.unlistenPool(pool), function() {});
-}
+Requester.prototype.disconnect = function(pool, callback) {
+  this._request(function(reqId) {
+    return Protocol.unlistenPool(pool, reqId);
+  }, callback);
+};
 
-Requester.prototype.Deposit = function(pool, protein) {
-  this.request(Protocol.depositPool(pool, protein.descrips, protein.ingests));
+Requester.prototype.Deposit = function(pool, protein, callback) {
+  this._request(function(reqId) {
+    return Protocol.depositPool(
+      pool,
+      protein.descrips,
+      protein.ingests,
+      reqId
+    );
+  }, callback);
 };
 
 Requester.prototype.Nth = function(pool, index, cb) {
   throw new Error('Nth not implemented');
-  this.request(Protocol.poolNth(pool, index), function(res) {
+  this._request(function(reqId) {
+    return Protocol.poolNth(pool, index, reqId);
+  }, function(res) {
     // The response is either of the format
     //  [true, data]
     // or
@@ -87,20 +101,28 @@ Requester.prototype.Nth = function(pool, index, cb) {
 
 Requester.prototype.NewestIndex = function(pool, callback) {
   throw new Error('NewestIndex not implemented');
-  return this.request(Protocol.poolNewestIndex(pool), callback);
+  return this._request(function(reqId) {
+    return Protocol.poolNewestIndex(pool, reqId);
+  }, callback);
 };
 
 Requester.prototype.OldestIndex = function(pool, callback) {
   throw new Error('OldestIndex not implemented');
-  return this.request(Protocol.poolOldestIndex(pool), callback);
+  return this._request(function(reqId) {
+    return Protocol.poolOldestIndex(pool, reqId);
+  }, callback);
 };
 
 Requester.prototype.CreatePool = function(poolName, callback) {
-  return this.request(Protocol.createPool(poolName), callback);
+  return this._request(function(reqId) {
+    return Protocol.createPool(poolName, reqId);
+  }, callback);
 };
 
 Requester.prototype.StopPool = function(poolName, callback) {
-  this.request(Protocol.stopPool(poolName), callback);
+  this._request(function(reqId) {
+    return Protocol.stopPool(poolName, reqId);
+  }, callback);
 };
 
 module.exports = Requester;
