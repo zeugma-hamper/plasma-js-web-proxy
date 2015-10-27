@@ -1,0 +1,31 @@
+<body>
+  <h1>Echo example</h1>
+  <p>This example uses the pool "js-test-pool". Create it now, if it doesn't already exist, using "$ p-create js-test-pool".</p>
+  <button onclick="depositTestProtein()">Deposit</button>
+  <h3>Proteins received</h4>
+  <div id="proteins"></div>
+</body>
+<script src="http://localhost:8000/plasma.js"></script>
+<script>
+  var proxy = Plasma.createProxy('http://localhost:8000/');
+
+  proxy.onConnect(function() {
+    var hose = proxy.createHose('js-test-pool', null, function() {
+      hose.await(function(protein) {
+        console.log(protein);
+        var div = document.createElement('div');
+        div.innerHTML = JSON.stringify(protein);
+        document.getElementById('proteins').appendChild(div);
+      });
+
+      window.depositTestProtein = function() {
+        hose.deposit({
+          descrips: ['test'],
+          ingests: {}
+        });
+      };
+
+    });
+  });
+</script>
+

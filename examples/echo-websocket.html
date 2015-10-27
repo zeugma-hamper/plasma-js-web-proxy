@@ -1,0 +1,46 @@
+<body>
+  <h1>Echo example</h1>
+  <p>This example uses the pool "js-test-pool". Create it now, if it doesn't already exist, using "$ p-create js-test-pool".</p>
+  <button onclick="depositTestProtein()">Deposit</button>
+  <h3>Proteins received</h4>
+  <div id="proteins"></div>
+</body>
+<script>
+  var ws = new WebSocket('ws://localhost:8000/sockjs/websocket');
+
+  var deposit = function(pool, protein) {
+    ws.send(JSON.stringify({
+      action: 'deposit',
+      descrips: protein.descrips,
+      ingests: protein.ingests,
+      pool: pool
+    }));
+  };
+
+  var depositTestProtein = function() {
+    deposit('js-test-pool', {
+      descrips: ['test'],
+      ingests: {}
+    });
+  };
+
+  ws.onmessage = function(e) {
+    console.log(e.data);
+    var data = JSON.parse(e.data);
+    console.log(data[0], true);
+    if (data[0] === true || data[0] === false) return;
+    var div = document.createElement('div');
+    div.innerHTML = e.data;
+    document.getElementById('proteins').appendChild(div);
+
+  };
+
+  ws.onopen = function() {
+    ws.send(JSON.stringify({
+      reqID: 'test',
+      action: 'addpool',
+      pool: 'js-test-pool'
+    }));
+  };
+
+</script>

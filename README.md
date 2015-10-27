@@ -19,6 +19,15 @@ Currently, only [SockJS](https://github.com/sockjs/sockjs-node) clients are
 supported, but support for additional transports like vanilla websockets could
 be easily added.
 
+## Examples
+
+Ensure the pool "js-test-pool" exists. Then, run
+
+$ npm run run-server
+$ npm run serve-examples
+
+Then visit http://localhost:4000/ in your browser.
+
 ## Building
 
 There are 4 useful make targets available:
@@ -30,3 +39,4 @@ make build # simply runs: npm run build
 make package # creates debian package
 
 make clean # Removes npm modules
+
