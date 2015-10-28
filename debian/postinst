@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+PREFIX=/opt/oblong/plasma-web-proxy3.21
+
+PROGRAMS=plasma-web-proxy
+
+if [ "$1" = "configure" ]; then
+    # Make our apps available in /usr/bin via polite symlinks.
+    for program in $PROGRAMS
+    do
+	update-alternatives --install /usr/bin/$program $program $PREFIX/server/bin/$program 100
+    done
+fi
+
+exit 0
+
+# end of file

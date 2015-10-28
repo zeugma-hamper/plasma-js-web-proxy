@@ -1,0 +1,5 @@
+oblong-plasma-web-proxy-gs3.21x (3.21.1) precise; urgency=low
+
+  * initial native debian packaging
+
+ -- Walter Sosa <wasosa@oblong.com>  Mon, 19 Oct 2015 11:52:58 -0700

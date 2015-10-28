@@ -19,3 +19,14 @@ Currently, only [SockJS](https://github.com/sockjs/sockjs-node) clients are
 supported, but support for additional transports like vanilla websockets could
 be easily added.
 
+## Building
+
+There are 4 useful make targets available:
+
+make modules # copies and installs node modules from git.oblong.com
+
+make build # simply runs: npm run build
+
+make package # creates debian package
+
+make clean # Removes npm modules

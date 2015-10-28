@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+PREFIX=/opt/oblong/plasma-web-proxy3.21
+
+PROGRAMS=plasma-web-proxy
+
+case $1 in
+remove|deconfigure)
+    # Unmake our apps available in /usr/bin via polite symlinks.
+    for program in $PROGRAMS
+    do
+	update-alternatives --remove $program $PREFIX/server/bin/$program
+    done
+    ;;
+*)
+    ;;
+esac
+
+exit 0
+
+# end of file
