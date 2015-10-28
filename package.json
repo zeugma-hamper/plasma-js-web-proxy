@@ -6,6 +6,7 @@
     "js-yaml": "3.3.1",
     "minimist": "1.1.2",
     "mocha": "2.3.3",
+    "mock-require": "1.2.0",
     "node-static": "0.7.6",
     "plasma-js-bridge": "0.1.4",
     "sinon": "1.17.1",
@@ -26,7 +27,7 @@
     "watch-client-js": "mkdir -p public && watchify client/plasma.js -o public/plasma.js --debug",
     "build-client-js:min": "mkdir -p public && browserify client/plasma.js | uglifyjs > public/plasma.min.js ",
     "build": "npm run build-client-js && npm run build-client-js:min",
-    "test-server": "mocha server/test/*"
+    "test-server": "mocha server/test/*",
+    "test-client": "mocha client/test/*"
   }
 }
-
