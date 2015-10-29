@@ -4,54 +4,63 @@ var ee = require('events').EventEmitter;
 
 var SOCKJS_ROUTE = 'sockjs';
 
-function Transport() {
+function Transport(baseUrl, connectCallback) {
   this._isReady = false;
-  this.emitter = new ee();
-}
+  this._emitter = new ee();
+  this._queue = [];
 
-Transport.prototype.connect = function(baseUrl, callback) {
-  if (this.sock) {
-    throw new Error('Plasma transport has already been asked to connect');
+  if (connectCallback && connectCallback.call) {
+    this._connectCallback = connectCallback;
   }
 
   if (baseUrl[baseUrl.length -1] !== '/') {
     baseUrl = baseUrl + '/';
   }
 
-  this.sock = new SockJS(baseUrl + SOCKJS_ROUTE);
+  this._sock = new SockJS(baseUrl + SOCKJS_ROUTE);
 
-  this.sock.onopen = _.bind(function() {
-    this._isReady = true;
-    if (callback.call) callback();
-  }, this);
+  this._sock.onopen = _.bind(this._onSockOpen, this);
+  this._sock.onmessage = _.bind(this._onSockMessage, this);
+  this._sock.onclose = _.bind(this._onSockClose, this);
+};
 
-  this.sock.onmessage = _.bind(function(e) {
-    try {
-      var data = JSON.parse(e.data);
-    } catch (ex) {
-      throw new Error ('Error: Unable to parse:' + e.data);
-    }
+Transport.prototype._onSockOpen = function() {
+  this._isReady = true;
+  this._flushQueue();
+  if (this._connectCallback) this._connectCallback();
+};
 
-    this.emitter.emit('message', data);
-  }, this);
+Transport.prototype._onSockMessage = function(e) {
+  try {
+    var data = JSON.parse(e.data);
+  } catch (ex) {
+    throw new Error ('Error: Unable to parse:' + e.data);
+  }
 
-  this.sock.onclose = _.bind(function() {
-    this.emitter.emit('close');
-  }, this);
+  this._emitter.emit('message', data);
 };
 
 Transport.prototype.send = function(obj) {
-  var str = JSON.stringify(obj);
-
   if (!this._isReady) {
-    throw new Error('Error: Attempted to send '+ str + ' before transport was ready. Use Plasma.connect("baseurl", callback) to be notified when transport is ready.');
+    this._queue.push(obj);
+    return;
   }
 
-  this.sock.send(str);
+  var str = JSON.stringify(obj);
+  this._sock.send(str);
+};
+
+Transport.prototype._onSockClose = function() {
+  this._emitter.emit('close');
+};
+
+Transport.prototype._flushQueue = function() {
+  _.each(this._queue, this.send, this);
+  this._queue = [];
 };
 
 Transport.prototype.onMessage = function(cb) {
-  this.emitter.addListener('message', cb);
+  this._emitter.addListener('message', cb);
 };
 
 module.exports = Transport;

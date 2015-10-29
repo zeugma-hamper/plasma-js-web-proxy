@@ -1,8 +1,14 @@
 var _ = require('underscore');
 
 function Proxy(baseUrl, RequesterClass, TransportClass, PoolListenerClass, HoseClass) {
+  if (!baseUrl) {
+    throw new Error('Proxy requires a baseUrl to connect to');
+  }
+
   this.baseUrl = baseUrl;
-  this.transport = new TransportClass();
+  this.transport = new TransportClass(
+    baseUrl,
+    _.bind(this._onTransportConnect, this));
   this.requester = new RequesterClass(this.transport);
   this.listener = new PoolListenerClass(this.requester);
   this._HoseClass = HoseClass;
@@ -10,7 +16,6 @@ function Proxy(baseUrl, RequesterClass, TransportClass, PoolListenerClass, HoseC
   this._connectListeners = [];
 
   this.transport.onMessage(_.bind(this.consumeMessage, this));
-  this.transport.connect(this.baseUrl, _.bind(this._onTransportConnect, this));
 }
 
 Proxy.prototype = {

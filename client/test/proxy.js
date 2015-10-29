@@ -16,7 +16,6 @@ describe('Proxy', function() {
   beforeEach(function() {
     TransportClass = sinon.spy(function() {
       transport = {
-        connect: sinon.spy(),
         onMessage: sinon.spy()
       };
       return transport;
@@ -37,6 +36,12 @@ describe('Proxy', function() {
     proxy = new Proxy(baseUrl, RequesterClass, TransportClass, PoolListenerClass, HoseClass);
   });
 
+  it('throws if no baseUrl is provided', function() {
+    assert.throws(function() {
+      proxy = new Proxy(undefined, RequesterClass, TransportClass, PoolListenerClass, HoseClass);
+    });
+  });
+
   it('creates internal objects', function() {
     assert(TransportClass.calledOnce);
     assert(RequesterClass.calledOnce);
@@ -45,14 +50,10 @@ describe('Proxy', function() {
     assert.equal(PoolListenerClass.lastCall.args[0], requester);
   });
 
-  it('connects transport upon initialization', function() {
-    assert(transport.connect.calledOnce);
-  });
-
   it('calls onConnect callback when transport is opened', function() {
     var beforeSpy = sinon.spy();
     proxy.onConnect(beforeSpy);
-    transport.connect.lastCall.args[1]();
+    TransportClass.lastCall.args[1]();
     assert(beforeSpy.called);
     var afterSpy = sinon.spy();
     proxy.onConnect(afterSpy);

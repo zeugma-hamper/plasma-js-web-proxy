@@ -9,23 +9,21 @@
 <script>
   var proxy = Plasma.createProxy('http://localhost:8000/');
 
-  proxy.onConnect(function() {
-    var hose = proxy.createHose('js-test-pool', null, function() {
-      hose.await(function(protein) {
-        console.log(protein);
-        var div = document.createElement('div');
-        div.innerHTML = JSON.stringify(protein);
-        document.getElementById('proteins').appendChild(div);
-      });
-
-      window.depositTestProtein = function() {
-        hose.deposit({
-          descrips: ['test'],
-          ingests: {}
-        });
-      };
-
+  var hose = proxy.createHose('js-test-pool', null, function() {
+    hose.await(function(protein) {
+      console.log(protein);
+      var div = document.createElement('div');
+      div.innerHTML = JSON.stringify(protein);
+      document.getElementById('proteins').appendChild(div);
     });
+
+    window.depositTestProtein = function() {
+      hose.deposit({
+        descrips: ['test'],
+        ingests: {}
+      });
+    };
+
   });
 </script>
 
