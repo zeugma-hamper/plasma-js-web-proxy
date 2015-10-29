@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "browserify": "11.0.0",
+    "http-server": "0.8.5",
     "js-yaml": "3.3.1",
     "minimist": "1.1.2",
     "mocha": "2.3.3",
@@ -28,6 +29,7 @@
     "build-client-js:min": "mkdir -p public && browserify client/plasma.js | uglifyjs > public/plasma.min.js ",
     "build": "npm run build-client-js && npm run build-client-js:min",
     "test-server": "mocha server/test/*",
-    "test-client": "mocha client/test/*"
+    "test-client": "mocha client/test/*",
+    "serve-examples": "http-server examples -p 4000"
   }
 }

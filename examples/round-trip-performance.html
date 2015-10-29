@@ -1,0 +1,44 @@
+<body>
+  <h1>Round trip performance example</h1>
+  <p>This example uses the pool "js-test-pool". Create it now, if it doesn't already exist, using "$ p-create js-test-pool".</p>
+  <h3>Average roundtrip</h4>
+  <p><span id="rtt"></span>ms</p>
+</body>
+<script src="http://localhost:8000/plasma.js"></script>
+<script>
+  var proxy = Plasma.createProxy('http://localhost:8000/');
+  var delay = 1000;
+
+  var sum = function(arr) {
+    return arr.reduce(function(memo, val) { return memo + val }, 0);
+  };
+
+  var avg = function(array) {
+    return Math.round(sum(array) / array.length);
+  };
+
+  var results = [];
+
+  var rttSpan = document.getElementById('rtt');
+
+  proxy.onConnect(function() {
+    var hose = proxy.createHose('js-test-pool', null, function() {
+      hose.await('round-trip', function(protein) {
+        var rtt = Date.now() - protein.ingests.sent;
+        results.push(rtt);
+        rttSpan.innerHTML = avg(results);
+      });
+
+      var deposit = function() {
+        hose.deposit({
+          descrips: ['round-trip'],
+          ingests: { sent: Date.now() }
+        });
+      };
+
+      setInterval(deposit, delay);
+
+    });
+  });
+</script>
+
