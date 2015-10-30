@@ -21,24 +21,22 @@
 
   var rttSpan = document.getElementById('rtt');
 
-  proxy.onConnect(function() {
-    var hose = proxy.createHose('js-test-pool', null, function() {
-      hose.await('round-trip', function(protein) {
-        var rtt = Date.now() - protein.ingests.sent;
-        results.push(rtt);
-        rttSpan.innerHTML = avg(results);
-      });
-
-      var deposit = function() {
-        hose.deposit({
-          descrips: ['round-trip'],
-          ingests: { sent: Date.now() }
-        });
-      };
-
-      setInterval(deposit, delay);
-
+  var hose = proxy.createHose('js-test-pool', null, function() {
+    hose.await('round-trip', function(protein) {
+      var rtt = Date.now() - protein.ingests.sent;
+      results.push(rtt);
+      rttSpan.innerHTML = avg(results);
     });
+
+    var deposit = function() {
+      hose.deposit({
+        descrips: ['round-trip'],
+        ingests: { sent: Date.now() }
+      });
+    };
+
+    setInterval(deposit, delay);
+
   });
 </script>
 
