@@ -55,13 +55,24 @@ describe('PoolListener', function() {
       assert(spy.calledOnce);
     });
 
-    it('should call onSuccess callback for all subsequent listeners, before or after connection', function() {
+    it('should call onSuccess callback for all subsequent listeners, before or after connection', function(done) {
       var spy = sinon.spy();
       listener.addPoolListener('some-pool', noop, spy);
       listener.addPoolListener('some-pool', noop, spy);
       simulateConnect();
       listener.addPoolListener('some-pool', noop, spy);
-      assert(spy.calledThrice);
+      // Even if the pool is already connected, we still defer the callback, so
+      // that the api is always asyncronous.
+      // http://blog.ometer.com/2011/07/24/callbacks-synchronous-and-asynchronous/
+      setTimeout(function() {
+        assert(spy.calledThrice);
+        done();
+      }, 0);
+    });
+
+    it('should not require onSuccess', function() {
+      listener.addPoolListener('some-pool', noop);
+      simulateConnect();
     });
 
     it('should call protein listeners upon receiving proteins', function() {

@@ -36,11 +36,17 @@ PoolListener.prototype.addPoolListener = function(pool, onProtein, onConnect) {
   this._proteinListeners[pool].push(onProtein);
 
   if (this.isConnected(pool)) {
-    onConnect();
-  } else if (this.isConnecting(pool)) {
-    this._addConnectListener(pool, onConnect);
+    if (onConnect) {
+      _.defer(onConnect);
+    }
   } else {
-    this._connect(pool, onConnect);
+    if (!this.isConnecting(pool)) {
+      this._connect(pool);
+    }
+
+    if (onConnect) {
+      this._addConnectListener(pool, onConnect);
+    }
   }
 };
 
@@ -83,9 +89,8 @@ PoolListener.prototype._addConnectListener = function(pool, callback) {
   this._connectListeners[pool].push(callback);
 };
 
-PoolListener.prototype._connect = function(pool, onConnect) {
+PoolListener.prototype._connect = function(pool) {
   this._pools[pool] = STATUS.CONNECTING;
-  this._addConnectListener(pool, onConnect);
   this._requester.connect(pool, _.bind(this._onPoolConnect, this, pool));
 };
 
