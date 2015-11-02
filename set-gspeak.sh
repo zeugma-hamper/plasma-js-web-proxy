@@ -20,5 +20,5 @@ esac
 # Update the version number in all instances of the strings
 # oblong-plasma-web-proxy-gs3.X in files in debian directory
 sed -i.bak \
-    -e "s/oblong-plasma-web-proxy-gs3.[0-9][0-9]*x/oblong-plasma-web-proxy-gs${version}x/g" \
+    -e "s/-gs3.[0-9][0-9]*x/-gs${version}x/g" \
     debian/control debian/changelog debian/postinst debian/prerm Makefile

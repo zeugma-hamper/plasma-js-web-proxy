@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-PREFIX=/opt/oblong/plasma-web-proxy3.21
+PREFIX=/opt/oblong/plasma-web-proxy-gs3.21x
 
 PROGRAMS=plasma-web-proxy
 
