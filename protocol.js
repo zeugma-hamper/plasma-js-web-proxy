@@ -13,8 +13,9 @@ module.exports = {
 
   ACTIONS: ACTIONS,
 
-  depositPool: function(poolName, descrips, ingests) {
+  depositPool: function(poolName, descrips, ingests, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_DEPOSIT,
       descrips: descrips,
       ingests: ingests,
@@ -22,51 +23,58 @@ module.exports = {
     };
   },
 
-  createPool: function(poolName) {
+  createPool: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_CREATE,
       pool: poolName
     };
   },
 
-  stopPool: function(poolName) {
+  stopPool: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_STOP,
       pool: poolName
     };
   },
 
-  listenPool: function(poolName) {
+  listenPool: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_LISTEN,
       pool: poolName,
     };
   },
 
-  unlistenPool: function(poolName) {
+  unlistenPool: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_UNLISTEN,
       pool: poolName
     };
   },
 
-  poolNth: function(poolName, index) {
+  poolNth: function(poolName, index, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.NTH,
       data: poolName,
       index: index
     };
   },
 
-  poolOldestIndex: function(poolName) {
+  poolOldestIndex: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_OLDEST_INDEX,
       data: poolName
     };
   },
 
-  poolNewestIndex: function(poolName) {
+  poolNewestIndex: function(poolName, reqId) {
     return {
+      reqId: reqId,
       action: ACTIONS.POOL_NEWEST_INDEX,
       data: poolName
     };
