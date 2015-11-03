@@ -1,4 +1,5 @@
 var assert = require('assert');
+var events = require('events');
 var sinon = require('sinon');
 var Proxy = require('../proxy');
 
@@ -15,9 +16,7 @@ describe('Proxy', function() {
 
   beforeEach(function() {
     TransportClass = sinon.spy(function() {
-      transport = {
-        onMessage: sinon.spy()
-      };
+      transport = new events.EventEmitter();
       return transport;
     });
     RequesterClass = sinon.spy(function() {
@@ -28,13 +27,19 @@ describe('Proxy', function() {
     });
     PoolListenerClass = sinon.spy(function() {
       listener = {
-        consume: sinon.spy()
+        consume: sinon.spy(),
+        setDisconnected: sinon.spy(),
+        reconnectAll: sinon.spy()
       };
       return listener;
     });
     HoseClass = sinon.spy();
     proxy = new Proxy(baseUrl, RequesterClass, TransportClass, PoolListenerClass, HoseClass);
   });
+
+  var receiveMessage = function(msg) {
+    transport.emit('message', msg);
+  };
 
   it('throws if no baseUrl is provided', function() {
     assert.throws(function() {
@@ -50,35 +55,35 @@ describe('Proxy', function() {
     assert.equal(PoolListenerClass.lastCall.args[0], requester);
   });
 
-  it('calls onConnect callback when transport is opened', function() {
-    var beforeSpy = sinon.spy();
-    proxy.onConnect(beforeSpy);
-    TransportClass.lastCall.args[1]();
-    assert(beforeSpy.called);
-    var afterSpy = sinon.spy();
-    proxy.onConnect(afterSpy);
-    assert(afterSpy.called);
-  });
-
   it('returns a hose when createHose() is called', function() {
     var hose = proxy.createHose('test-pool');
     assert(HoseClass.calledOnce);
     assert.deepEqual(
       HoseClass.lastCall.args,
       [requester, listener, 'test-pool', undefined, undefined]);
-
   });
 
   it('forwards message responses to its requester', function() {
     var message = [true, {}];
-    transport.onMessage.lastCall.args[0](message);
+    receiveMessage(message);
     assert(requester.consume.calledOnce);
   });
 
   it('forwards proteins to its poollistener', function() {
     var zippedProtein = ['somepool', 1, 1, [], {}];
-    transport.onMessage.lastCall.args[0](zippedProtein);
+    receiveMessage(zippedProtein);
     assert(listener.consume.calledOnce);
+  });
+
+  it('tells its pool listener when transport closes', function() {
+    transport.emit('close');
+    assert(listener.setDisconnected.calledOnce);
+  });
+
+  it('tells its pool listener to reconnect when transport opens', function() {
+    transport.emit('close');
+    transport.emit('open');
+    assert(listener.reconnectAll.calledOnce);
   });
 
 });

@@ -71,6 +71,19 @@ describe('registrar', function() {
     assert(clientB.write.calledOnce);
   });
 
+  it('only subscribes to a pool once per client', function() {
+    var client = makeClient();
+    var protein = {
+      descrips: [],
+      ingests: {}
+    };
+    registrar.registerClientToPool(client, 'test-pool');
+    registrar.registerClientToPool(client, 'test-pool');
+    var lastPeekArgs = plasma.peek.lastCall.args;
+    lastPeekArgs[1](protein);
+    assert(client.write.calledOnce);
+  });
+
 });
 
 

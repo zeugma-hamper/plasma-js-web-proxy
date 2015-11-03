@@ -77,6 +77,13 @@ Registrar.prototype = {
   registerClientToPool: function(conn, pool) {
     log.info('Registering client "%s" to pool "%s"', conn.id, pool);
     this.poolListeners[pool] = this.poolListeners[pool] || [];
+    if (this.poolListeners[pool].indexOf(conn) > -1) {
+      log.info(
+        'Client "%s" was already registered to pool "%s"',
+        conn.id,
+        pool);
+      return;
+    }
     this.poolListeners[pool].push(conn);
     this.ensurePeekProcesses();
   },

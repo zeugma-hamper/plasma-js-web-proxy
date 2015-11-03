@@ -41,7 +41,7 @@ PoolListener.prototype.addPoolListener = function(pool, onProtein, onConnect) {
     }
   } else {
     if (!this.isConnecting(pool)) {
-      this._connect(pool);
+      this._listen(pool);
     }
 
     if (onConnect) {
@@ -64,7 +64,7 @@ PoolListener.prototype.removePoolListener = function(pool, onProtein) {
   this._proteinListeners[pool].splice(index, 1);
   if (this._proteinListeners[pool].length === 0) {
     // no longer needed
-    this._disconnect(pool);
+    this._unlisten(pool);
   }
 
   return true;
@@ -89,12 +89,15 @@ PoolListener.prototype._addConnectListener = function(pool, callback) {
   this._connectListeners[pool].push(callback);
 };
 
-PoolListener.prototype._connect = function(pool) {
+PoolListener.prototype._listen = function(pool) {
+  if (this.isConnected(pool) || this.isConnecting(pool)) {
+    return;
+  }
   this._pools[pool] = STATUS.CONNECTING;
   this._requester.connect(pool, _.bind(this._onPoolConnect, this, pool));
 };
 
-PoolListener.prototype._disconnect = function(pool) {
+PoolListener.prototype._unlisten = function(pool) {
   delete this._pools[pool];
   delete this._proteinListeners[pool];
   this._requester.disconnect(pool);
@@ -105,9 +108,18 @@ PoolListener.prototype.isConnected = function(pool) {
 };
 
 PoolListener.prototype.isConnecting = function(pool) {
-  console.log
   return this._pools[pool] === STATUS.CONNECTING;
-}
+};
+
+PoolListener.prototype.setDisconnected = function() {
+  this._pools = {};
+};
+
+PoolListener.prototype.reconnectAll = function() {
+  for (var pool in this._proteinListeners) {
+    this._listen(pool);
+  };
+};
 
 module.exports = PoolListener;
 
