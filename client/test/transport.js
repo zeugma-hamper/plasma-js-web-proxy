@@ -36,27 +36,40 @@ describe('Transport', function() {
       var transport = new Transport('otherurl');
       assert.equal(sockSpy.lastCall.args[0], 'otherurl/sockjs');
     });
+  });
 
-    it('runs provided connect() callback when socket is opened', function() {
+  describe('on("open")', function() {
+    it('runs provided callback when socket is opened', function() {
+      var transport = new Transport('otherurl');
       var spy = sinon.spy();
-      var transport = new Transport('otherurl', spy);
+      transport.on('open', spy);
       sock.onopen();
       assert(spy.calledOnce);
     });
   });
 
-  describe('onMessage()', function() {
+  describe('on("message")', function() {
     it('calls listeners when socket receives data', function() {
       var spy1 = sinon.spy();
       var spy2 = sinon.spy();
       var message = { hi: 'there' };
       var transport = new Transport('');
       sock.onopen();
-      transport.onMessage(spy1);
-      transport.onMessage(spy2);
+      transport.on('message', spy1);
+      transport.on('message', spy2);
       sock.onmessage({ data: JSON.stringify(message) });
       assert.deepEqual(spy1.lastCall.args[0], message);
       assert.deepEqual(spy2.lastCall.args[0], message);
+    });
+  });
+
+  describe('on("close")', function() {
+    it('runs provided callback when socket is closed', function() {
+      var transport = new Transport('otherurl');
+      var spy = sinon.spy();
+      transport.on('close', spy);
+      sock.onclose();
+      assert(spy.calledOnce);
     });
   });
 

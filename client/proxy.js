@@ -6,38 +6,27 @@ function Proxy(baseUrl, RequesterClass, TransportClass, PoolListenerClass, HoseC
   }
 
   this.baseUrl = baseUrl;
-  this.transport = new TransportClass(
-    baseUrl,
-    _.bind(this._onTransportConnect, this));
+  this.transport = new TransportClass(baseUrl);
   this.requester = new RequesterClass(this.transport);
   this.listener = new PoolListenerClass(this.requester);
   this._HoseClass = HoseClass;
-  this._isConnected = false;
-  this._connectListeners = [];
 
-  this.transport.onMessage(_.bind(this.consumeMessage, this));
+  this.transport.on('open', _.bind(this._onTransportOpen, this));
+  this.transport.on('message', _.bind(this._consumeMessage, this));
+  this.transport.on('close', _.bind(this._onTransportClose, this));
 }
 
 Proxy.prototype = {
 
-  onConnect: function(callback) {
-    if (this._isConnected) {
-      callback();
-    } else {
-      this._connectListeners.push(callback);
-    }
+  _onTransportOpen: function() {
+    this.listener.reconnectAll();
   },
 
-  _onTransportConnect: function() {
-    this._isConnected = true;
-    _.each(this._connectListeners, function(listener) {
-      listener();
-    });
-
-    this._connectListeners = [];
+  _onTransportClose: function() {
+    this.listener.setDisconnected();
   },
 
-  consumeMessage: function(data) {
+  _consumeMessage: function(data) {
     if (data[0] === true || data[0] === false) {
       this.requester.consume(data);
     } else {
