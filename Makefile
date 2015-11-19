@@ -26,8 +26,7 @@ build: modules
 modules: $(MODULES)
 
 $(MODULES):
-	scp -r git.oblong.com:/ob/buildtools/src-mirrors/plasma-web-proxy/node_modules.tar.gz .
-	rm -rf node_modules && tar xzf node_modules.tar.gz
+	./buildbot-npm-modules.sh download
 
 package:
 	debuild -b -uc -us -kbuildtools@oblong.com
