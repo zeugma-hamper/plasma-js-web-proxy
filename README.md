@@ -40,3 +40,10 @@ make package # creates debian package
 
 make clean # Removes npm modules
 
+## Maintaining buildbot
+
+If you make changes to package.json or npm-shrinkwrap.json
+then you should also run: ./buildbot-npm-modules.sh upload
+
+You can double check that everything is as buildbot expects
+by running: make clean package
