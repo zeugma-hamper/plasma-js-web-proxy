@@ -13,5 +13,5 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          oblong-nodejs,
-	 oblong-system-protist3.21,
+	 oblong-system-protist3.23,
 Description: Allows listening / depositing to pools via an HTTP and Websocket interface.
