@@ -1,4 +1,4 @@
-Source: oblong-plasma-web-proxy-gs3.22x
+Source: oblong-plasma-web-proxy-gs3.23x
 Section: non-free/misc
 Priority: extra
 Maintainer: buildtools <buildtools@oblong.com>
@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 7),
 Standards-Version: 3.8.3
 Vcs-Git: git.oblong.com:/ob/git/repo/plasma-web-proxy.git
 
-Package: oblong-plasma-web-proxy-gs3.22x
+Package: oblong-plasma-web-proxy-gs3.23x
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
