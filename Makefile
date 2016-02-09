@@ -1,6 +1,6 @@
 .PHONY: all build modules package clean
 
-PREFIX ?= /opt/oblong/plasma-web-proxy-gs3.21x
+PREFIX ?= /opt/oblong/plasma-web-proxy-gs3.22x
 DESTDIR ?= 
 ITEMS = client server public node_modules package.json protocol.js README.md
 MODULES = node_modules
