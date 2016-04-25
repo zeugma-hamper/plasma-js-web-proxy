@@ -4,14 +4,18 @@ Priority: extra
 Maintainer: buildtools <buildtools@oblong.com>
 Build-Depends: debhelper (>= 7),
    build-essential,
-   oblong-nodejs,
+# On Ubuntu 16.04 and up, we do not build nodejs, we use system nodejs instead.
+   oblong-nodejs | nodejs-legacy (>= 4.2),
+   oblong-nodejs | npm (>= 3.5.2),
 Standards-Version: 3.8.3
-Vcs-Git: git.oblong.com:/ob/git/repo/plasma-web-proxy.git
+Vcs-Git: git@gitlab.oblong.com:platform/plasma-web-proxy.git
 
 Package: oblong-plasma-web-proxy-gs3.24x
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         oblong-nodejs,
+# On Ubuntu 16.04 and up, we do not build nodejs, we use system nodejs instead.
+         oblong-nodejs | nodejs-legacy (>= 4.2),
+         oblong-nodejs | npm (>= 3.5.2),
 	 oblong-system-protist3.24,
 Description: Allows listening / depositing to pools via an HTTP and Websocket interface.
