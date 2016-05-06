@@ -33,6 +33,41 @@ function ProxyServer(opts) {
     conn.write(JSON.stringify([true, message.reqId]));
   }.bind(this);
 
+  var poolNth = function(conn, index, pool) {
+    plasma.nth(pool, index, function(protein) {
+      var msg = Protocol.poolNthResponse(protein, reqId);
+      conn.write(JSON.stringify(msg));
+    });
+  }.bind(this);
+
+  var poolOldest = function(conn, reqId, pool) {
+    plasma.oldest(pool, function(protein) {
+      var msg = Protocol.poolOldestResponse(protein, reqId);
+      conn.write(JSON.stringify(msg));
+    });
+  }.bind(this);
+
+  var poolNewest = function(conn, reqId, pool) {
+    plasma.newest(pool, function(protein) {
+      var msg = Protocol.poolNewestResponse(protein, reqId);
+      conn.write(JSON.stringify(msg));
+    });
+  }.bind(this);
+
+  var poolOldestIndex = function(conn, reqId, pool) {
+    plasma.oldestIndex(pool, function(index) {
+      var msg = Protocol.poolOldestIndexResponse(index, reqId)
+      conn.write(JSON.stringify(msg));
+    });
+  }.bind(this);
+
+  var poolNewestIndex = function(conn, reqId, pool) {
+    plasma.newestIndex(pool, function(index) {
+      var msg = Protocol.poolNewestIndexResponse(index, reqId)
+      conn.write(JSON.stringify(msg));
+    });
+  }.bind(this);
+
   var poolUnlisten = function(conn, pool) {
     this.registrar.deregisterClientFromPool(conn, pool);
   }.bind(this);
@@ -53,6 +88,21 @@ function ProxyServer(opts) {
       switch (message.action) {
         case ACTIONS.POOL_DEPOSIT:
           poolDeposit(conn, message.descrips, message.ingests, message.pool);
+          break;
+        case ACTIONS.POOL_NTH:
+          poolNth(conn, message.index, message.pool);
+          break;
+        case ACTIONS.POOL_OLDEST:
+          poolOldest(conn, message.reqId, message.pool);
+          break;
+        case ACTIONS.POOL_NEWEST:
+          poolNewest(conn, message.reqId, message.pool);
+          break;
+        case ACTIONS.POOL_OLDEST_INDEX:
+          poolOldestIndex(conn, message.reqId, message.pool);
+          break;
+        case ACTIONS.POOL_NEWEST_INDEX:
+          poolNewestIndex(conn, message.reqId, message.pool);
           break;
         case ACTIONS.POOL_LISTEN:
           poolListen(conn, message.pool);

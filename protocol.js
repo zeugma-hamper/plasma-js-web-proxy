@@ -5,6 +5,8 @@ var ACTIONS = {
   POOL_LISTEN: 'addpool',
   POOL_UNLISTEN: 'delpool',
   POOL_NTH: 'nth',
+  POOL_OLDEST: 'oldest',
+  POOL_NEWEST: 'newest',
   POOL_OLDEST_INDEX: 'oldest-idx',
   POOL_NEWEST_INDEX: 'newest-idx'
 };
@@ -58,9 +60,49 @@ module.exports = {
   poolNth: function(poolName, index, reqId) {
     return {
       reqId: reqId,
-      action: ACTIONS.NTH,
+      action: ACTIONS.POOL_NTH,
       data: poolName,
       index: index
+    };
+  },
+
+  poolNthResponse: function(protein, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_NTH,
+      protein: protein,
+    };
+  },
+
+  poolOldest: function(poolName, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_OLDEST,
+      pool: poolName
+    };
+  },
+
+  poolOldestResponse: function(protein, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_OLDEST,
+      protein: protein
+    };
+  },
+
+  poolNewest: function(poolName, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_NEWEST,
+      pool: poolName
+    };
+  },
+
+  poolNewestResponse: function(protein, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_NEWEST,
+      protein: protein
     };
   },
 
@@ -68,7 +110,15 @@ module.exports = {
     return {
       reqId: reqId,
       action: ACTIONS.POOL_OLDEST_INDEX,
-      data: poolName
+      pool: poolName
+    };
+  },
+
+  poolOldestIndexResponse: function(index, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_OLDEST_INDEX,
+      index: index
     };
   },
 
@@ -76,7 +126,15 @@ module.exports = {
     return {
       reqId: reqId,
       action: ACTIONS.POOL_NEWEST_INDEX,
-      data: poolName
+      pool: poolName
+    };
+  },
+
+  poolNewestIndexResponse: function(index, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_NEWEST_INDEX,
+      index: index
     };
   },
 
