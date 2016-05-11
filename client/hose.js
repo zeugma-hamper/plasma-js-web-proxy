@@ -129,6 +129,27 @@ Hose.prototype.unawait = function(callback) {
   }
 };
 
+Hose.prototype.newestIndex = function(callback) {
+  this._requester.NewestIndex(this.pool, callback);
+};
+
+Hose.prototype.oldestIndex = function(callback) {
+  this._requester.OldestIndex(this.pool, callback);
+};
+
+Hose.prototype.newest = function(callback) {
+  this._requester.Newest(this.pool, callback);
+};
+
+Hose.prototype.oldest = function(callback) {
+  this._requester.Oldest(this.pool, callback);
+};
+
+// Hose.prototype.nth = function(index, callback) {
+//   this._requester.nth(this.pool, index, callback);
+// };
+
+
 // Legacy
 Hose.prototype.Deposit = Hose.prototype.deposit;
 Hose.prototype.Await = Hose.prototype.await;

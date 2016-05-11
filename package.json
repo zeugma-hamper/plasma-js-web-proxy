@@ -9,7 +9,7 @@
     "mocha": "2.3.3",
     "mock-require": "1.2.0",
     "node-static": "0.7.6",
-    "plasma-js-bridge": "0.1.6",
+    "plasma-js-bridge": "0.1.7",
     "sinon": "1.17.1",
     "sockjs": "0.3.15",
     "sockjs-client": "1.0.2",
@@ -30,6 +30,7 @@
     "build": "npm run build-client-js && npm run build-client-js:min",
     "test-server": "mocha server/test/*",
     "test-client": "mocha client/test/*",
+    "test": "npm run test-server && npm run test-client",
     "serve-examples": "http-server examples -p 4000"
   }
 }

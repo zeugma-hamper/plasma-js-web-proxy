@@ -27,7 +27,8 @@ Proxy.prototype = {
   },
 
   _consumeMessage: function(data) {
-    if (data[0] === true || data[0] === false) {
+    if (data[0] === true || data[0] === false
+      || data.reqId !== undefined) {
       this.requester.consume(data);
     } else {
       this.listener.consume(data);
