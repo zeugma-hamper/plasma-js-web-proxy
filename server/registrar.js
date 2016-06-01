@@ -40,7 +40,9 @@ Registrar.prototype = {
     }
     log.info('Starting peek on pool "%s"', pool);
     this.peekProcesses[pool] = plasma.peek(pool, function(protein) {
-      this.emit(pool, protein);
+      if (protein) {
+        this.emit(pool, protein);
+      }
     }.bind(this));
     return true;
   },

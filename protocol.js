@@ -153,8 +153,8 @@ module.exports = {
       meta.pool,
       meta.index,
       meta.timestamp,
-      (protein ? protein.descrips : []),
-      (protein ? protein.ingests : {})
+      protein.descrips,
+      protein.ingests
     ];
   }
 
