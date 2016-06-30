@@ -16,7 +16,7 @@ var DEFAULT_LOGLEVEL = 'info';
 function ProxyServer(opts) {
   opts = opts || {};
   this.port = opts.port || DEFAULT_PORT;
-  this.hostname = opts.host || DEFAULT_HOST;
+  this.hostname = opts.hostname || DEFAULT_HOST;
   this.logLevel = opts.logLevel || DEFAULT_LOGLEVEL;
   this.registrar = new Registrar();
 
