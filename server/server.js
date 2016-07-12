@@ -10,13 +10,12 @@ var Registrar = require('./registrar');
 
 var SERVICE_NAME = 'plasma-web-proxy';
 var DEFAULT_PORT = '8000';
-var DEFAULT_HOST = 'localhost';
 var DEFAULT_LOGLEVEL = 'info';
 
 function ProxyServer(opts) {
   opts = opts || {};
   this.port = opts.port || DEFAULT_PORT;
-  this.hostname = opts.hostname || DEFAULT_HOST;
+  this.hostname = opts.hostname;
   this.logLevel = opts.logLevel || DEFAULT_LOGLEVEL;
   this.registrar = new Registrar();
 
@@ -135,7 +134,7 @@ function ProxyServer(opts) {
 
   sockServer.installHandlers(server, {prefix:'/sockjs'});
 
-  log.info('Starting %s on %s:%s', SERVICE_NAME, this.hostname, this.port);
+  log.info('Starting %s on %s:%s', SERVICE_NAME, this.hostname || '', this.port);
 
   server.listen(this.port, this.hostname);
 }
