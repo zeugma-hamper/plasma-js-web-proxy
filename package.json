@@ -9,7 +9,7 @@
     "mocha": "2.3.3",
     "mock-require": "1.2.0",
     "node-static": "0.7.6",
-    "plasma-js-bridge": "0.1.10",
+    "plasma-js-bridge": "0.1.13",
     "sinon": "1.17.1",
     "sockjs": "0.3.15",
     "sockjs-client": "1.0.2",
