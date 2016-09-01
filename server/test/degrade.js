@@ -3,8 +3,6 @@ var plasma = require('plasma-js-bridge');
 var degrade = require('../degrade');
 
 describe('degrade', function() {
-  beforeEach(function() {
-  });
 
   it('should turn vects into arrays', function() {
     var vect = new plasma.types.Vect(1, 2, 3);
