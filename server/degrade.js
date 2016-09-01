@@ -12,6 +12,8 @@ var objMap = function(obj, iter) {
 module.exports = function degrade(input) {
   if (input instanceof plasma.types.Vect) {
     return input.toArray();
+  } else if (input instanceof plasma.types.Array) {
+    return input.toArray();
   } else if (Array.isArray(input)) {
     return input.map(degrade);
   } else if (input !== null && typeof input === 'object') {
