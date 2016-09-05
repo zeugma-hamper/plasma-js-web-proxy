@@ -34,21 +34,21 @@ function ProxyServer(opts) {
 
   var poolNth = function(conn, index, pool) {
     plasma.nth(pool, index, function(protein) {
-      var msg = Protocol.poolNthResponse(protein, reqId);
+      var msg = Protocol.poolNthResponse(degrade(protein), reqId);
       conn.write(JSON.stringify(msg));
     });
   }.bind(this);
 
   var poolOldest = function(conn, reqId, pool) {
     plasma.oldest(pool, function(protein) {
-      var msg = Protocol.poolOldestResponse(protein, reqId);
+      var msg = Protocol.poolOldestResponse(degrade(protein), reqId);
       conn.write(JSON.stringify(msg));
     });
   }.bind(this);
 
   var poolNewest = function(conn, reqId, pool) {
     plasma.newest(pool, function(protein) {
-      var msg = Protocol.poolNewestResponse(protein, reqId);
+      var msg = Protocol.poolNewestResponse(degrade(protein), reqId);
       conn.write(JSON.stringify(msg));
     });
   }.bind(this);

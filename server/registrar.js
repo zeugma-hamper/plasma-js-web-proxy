@@ -1,6 +1,7 @@
 var plasma = require('plasma-js-bridge');
 var Protocol = require('../protocol');
 var log = require('./logger');
+var degrade = require('./degrade');
 
 // Helpers and bookkeeping for signing up clients to pool.  Only one peek
 // process is started per pool, and can be shared between multiple clients.
@@ -19,7 +20,7 @@ Registrar.prototype = {
     var listeners = this.poolListeners[pool];
     if (!listeners) return;
     listeners.forEach(function(conn) {
-      var msg = JSON.stringify(Protocol.zipProtein(protein, {
+      var msg = JSON.stringify(Protocol.zipProtein(degrade(protein), {
         pool: pool,
         timestamp: Date.now(),
         index: -1
