@@ -4,8 +4,14 @@ var degrade = require('../degrade');
 
 describe('degrade', function() {
 
-  it('should turn vects into arrays', function() {
+  it('should turn plasma vects into arrays', function() {
     var vect = new plasma.types.Vect(1, 2, 3);
+    var output = degrade(vect);
+    assert.deepEqual(output, [1, 2, 3]);
+  });
+
+  it('should turn plasma.arrays into arrays', function() {
+    var vect = new plasma.types.Array([1, 2, 3]);
     var output = degrade(vect);
     assert.deepEqual(output, [1, 2, 3]);
   });
