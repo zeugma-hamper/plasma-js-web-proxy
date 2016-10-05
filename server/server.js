@@ -7,6 +7,7 @@ var EE = require('events').EventEmitter;
 var log = require('./logger');
 var Protocol = require('../protocol');
 var Registrar = require('./registrar');
+var degrade = require('./degrade');
 
 var SERVICE_NAME = 'plasma-web-proxy';
 var DEFAULT_PORT = '8000';
