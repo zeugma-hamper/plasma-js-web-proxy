@@ -21,12 +21,17 @@ be easily added.
 
 ## Examples
 
-Ensure the pool "js-test-pool" exists. Then, run
+Ensure the pool "js-test-pool" exists. Then, run these commands to build the
+plasma.js script in `public/` and run the proxy server:
 
-$ npm run run-server
-$ npm run serve-examples
+    $ npm run build
+    $ npm run run-server
 
-Then visit http://localhost:4000/ in your browser.
+And this in another terminal to serve up examples:
+
+    $ npm run serve-examples
+
+Then visit http://localhost:4000/ in your browser to try the examples.
 
 ## Building
 
