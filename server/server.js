@@ -33,6 +33,11 @@ function ProxyServer(opts) {
     conn.write(JSON.stringify([true, message.reqId]));
   }.bind(this);
 
+  var poolListenNth = function(conn, index, pool) {
+    this.registrar.registerClientToPoolNth(conn, index, pool);
+    conn.write(JSON.stringify([true, message.reqId]));
+  }.bind(this);
+
   var poolNth = function(conn, index, pool) {
     plasma.nth(pool, index, function(protein) {
       var msg = Protocol.poolNthResponse(degrade(protein), reqId);
@@ -109,6 +114,9 @@ function ProxyServer(opts) {
           break;
         case ACTIONS.POOL_UNLISTEN:
           poolUnlisten(conn, message.pool);
+          break;
+        case ACTIONS.POOL_LISTEN_NTH:
+          poolListenNth(conn, message.index, message.pool);
           break;
         default:
           log.warn('Unknown message type "%s" for "%s"', message.action, text);

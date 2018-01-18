@@ -4,6 +4,7 @@ var ACTIONS = {
   POOL_STOP: 'stoppool',
   POOL_LISTEN: 'addpool',
   POOL_UNLISTEN: 'delpool',
+  POOL_LISTEN_NTH: 'peek-nth',
   POOL_NTH: 'nth',
   POOL_OLDEST: 'oldest',
   POOL_NEWEST: 'newest',
@@ -54,6 +55,15 @@ module.exports = {
       reqId: reqId,
       action: ACTIONS.POOL_UNLISTEN,
       pool: poolName
+    };
+  },
+
+  listenPoolNth: function(poolName, index, reqId) {
+    return {
+      reqId: reqId,
+      action: ACTIONS.POOL_LISTEN_NTH,
+      pool: poolName,
+      index: index
     };
   },
 

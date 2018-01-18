@@ -7,10 +7,16 @@ var degrade = require('./degrade');
 // process is started per pool, and can be shared between multiple clients.
 // Peek processes are reaped automatically when there are no more interested
 // clients.
+// In `peek --seekto-index` instances, we cannot share between clients, but we
+// still need to cleanup automatically when the client leaves
 
 var Registrar = function() {
+  // peekProcesses maps poolname => process
   this.peekProcesses = {};
+  // poolListeners maps poolname => connection list
   this.poolListeners = {};
+  // seekNthProcesses maps connection id => process list
+  this.seekNthProcesses = {};
 };
 
 
@@ -28,6 +34,17 @@ Registrar.prototype = {
       log.debug('Protein arrived: %s', msg);
       conn.write(msg);
     });
+  },
+
+  emitNth: function(conn, pool, protein) {
+    if (!conn) return;
+    var msg = JSON.stringify(Protocol.zipProtein(degrade(protein), {
+      pool: pool,
+      timestamp: Date.now(),
+      index: -1
+    }));
+    log.debug('Protein arrived: %s', msg);
+    conn.write(msg);
   },
 
   peekExistsForPool: function(pool) {
@@ -59,6 +76,23 @@ Registrar.prototype = {
     return true;
   },
 
+  stopPeekingConnection: function(connid) {
+    if (!this.seekNthProcesses[connid]) {
+      log.debug('Asked to stop peeking connection "%s", but there\'s nothing to stop', connid);
+      return false;
+    }
+    log.info('Stopping %d peek(s) on client "%s"',
+             this.seekNthProcesses[connid].length, connid);
+    for (var idx in this.seekNthProcesses[connid]) {
+      var proc = this.seekNthProcesses[connid][idx];
+      if(proc) {
+        proc.kill();
+      }
+    }
+    delete this.seekNthProcesses[connid];
+    return true;
+  },
+
   ensurePeekProcesses: function() {
     log.debug('Ensuring peek exists for all listened pools');
     for (var pool in this.poolListeners) {
@@ -75,6 +109,9 @@ Registrar.prototype = {
         this.stopPeekingPool(pool);
       }
     }
+    for (var connid in this.seekNthProcesses) {
+      this.stopPeekingConnection(connid);
+    }
   },
 
   registerClientToPool: function(conn, pool) {
@@ -89,6 +126,18 @@ Registrar.prototype = {
     }
     this.poolListeners[pool].push(conn);
     this.ensurePeekProcesses();
+  },
+
+  registerClientToPoolNth: function(conn, index, pool) {
+    log.info('Registering client "%s" to peek pool "%s" at index %d',
+             conn.id, pool, index);
+    this.seekNthProcesses[conn.id] = this.seekNthProcesses[conn.id] || [];
+    var proc = plasma.peekNth(pool, index, function(protein) {
+      if (protein) {
+        this.emitNth(conn, pool, protein);
+      }
+    }.bind(this));
+    this.seekNthProcesses[conn.id].push(proc);
   },
 
   deregisterClientFromPool: function(conn, pool, skipCull) {
