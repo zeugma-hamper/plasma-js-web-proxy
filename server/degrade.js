@@ -9,6 +9,17 @@ var objMap = function(obj, iter) {
   return out;
 };
 
+/**
+ * Degrades the input (usually a protein) into JSON-compatible types
+ *
+ * When a protein is received via plasma-js-bridge/Gelatin it often uses
+ * custom types that are incompatible with JSON (e.g. Vect, Protein).
+ *
+ * This function is NOT GUARANTEED TO RETURN VALID JSON!! It will return
+ * back unchanged any input that isn't explicitly handled and converted.
+ *
+ * FIXME: Add support for Gelatin types to ensure intercompatibility!
+ */
 module.exports = function degrade(input) {
   if (input instanceof plasma.types.Vect) {
     return input.toArray();
@@ -22,4 +33,3 @@ module.exports = function degrade(input) {
     return input;
   }
 };
-
