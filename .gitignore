@@ -1,2 +1,9 @@
 node_modules/
 public/
+bs-options.dat
+node_modules.*.tar.gz
+*.build
+*.buildinfo
+*.changes
+*.deb
+*.log

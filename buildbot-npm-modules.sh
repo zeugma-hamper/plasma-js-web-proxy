@@ -56,6 +56,7 @@ do_upload()
     fi
 
     rm -rf node_modules
+    export G_SPEAK_HOME=$(obs get-gspeak-home)
     npm install
     tar czf $archive node_modules
     ssh $host "mkdir -p $basepath"
@@ -68,11 +69,18 @@ do_download()
     if ! ssh $host "test -f $basepath/$archive"
     then
         echo
-        echo "ERROR: $archive was not found. To create it and upload it, run:"
+        echo "WARNING: $archive is missing. I'll try to build it myself."
         echo
-        echo "    $0 upload"
-        echo
-        exit 1
+        do_upload
+        if ! ssh $host "test -f $basepath/$archive"
+        then
+            echo
+            echo "ERROR: Hmm, I couldn't build $archive myself. Try doing this:"
+            echo
+            echo "    $0 upload"
+            echo
+            exit 1
+        fi
     fi
 
     scp $host:$basepath/$archive .
@@ -97,7 +105,7 @@ esac
 
 host=git.oblong.com
 basepath=/ob/buildtools/src-mirrors/$(get_module)
-archive=node_modules.$(get_hash).tar.gz
+archive=node_modules.gs$(obs get-gspeak-version).$(obs detect-os).$(get_hash).tar.gz
 
 case $1 in
     download) do_download ;;

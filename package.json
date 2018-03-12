@@ -1,8 +1,8 @@
-{
-  "name": "plasma-web-proxy",
+{ "name": "plasma-web-proxy",
   "version": "0.0.1",
   "dependencies": {
     "browserify": "11.0.0",
+    "gelatin": "0.3.3",
     "http-server": "0.8.5",
     "js-yaml": "3.3.1",
     "minimist": "1.1.2",
@@ -18,7 +18,7 @@
     "winston": "1.0.1"
   },
   "devDependencies": {
-    "nodemon": "1.4.0",
+    "nodemon": "1.17.1",
     "watchify": "3.3.0"
   },
   "scripts": {
