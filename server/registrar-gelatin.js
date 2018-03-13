@@ -98,6 +98,7 @@ Registrar.prototype = {
       return false;
     }
     log.info('Stopping peek on pool "%s"', pool);
+    this.peekProcesses[pool].end();
     delete this.peekProcesses[pool];
     return true;
   },
@@ -219,7 +220,7 @@ Registrar.prototype = {
       var index = listeners.indexOf(conn);
       if (index > -1) {
         if (listeners.length === 1) {
-          log.info('Stopping lonely peek "%s"', pool);
+          log.info('Deregistering last peek for "%s"', pool);
           delete this.peekListeners[pool];
           if (!skipCull) this.cullPeekProcesses();
         } else {
@@ -231,7 +232,7 @@ Registrar.prototype = {
       var index = depositors.indexOf(conn);
       if (index > -1) {
         if (depositors.length === 1) {
-          log.info('Stopping lonely poke "%s"', pool);
+          log.info('Deregistering last poke for "%s"', pool);
           delete this.pokeDepositors[pool];
           if (!skipCull) this.cullPokeProcesses();
         } else {
