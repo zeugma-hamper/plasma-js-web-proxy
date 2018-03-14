@@ -4,6 +4,10 @@ var ProxyServer = require('../server.js');
 
 var argv = parseArgs(process.argv);
 
+if(argv.gelatin) {
+  ProxyServer = require('../server-gelatin.js');
+}
+
 new ProxyServer({
   port: argv.port,
   hostname: argv.host,

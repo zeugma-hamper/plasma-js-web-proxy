@@ -1,0 +1,5 @@
+debhelper-build-stamp
+files
+*.log
+*.substvars
+oblong-plasma-web-proxy-gs4.5x

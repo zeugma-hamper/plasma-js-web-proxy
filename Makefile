@@ -1,7 +1,11 @@
 .PHONY: all build modules package clean
 
-PREFIX ?= /opt/oblong/plasma-web-proxy-gs4.5x
-DESTDIR ?= 
+PREFIX := $(shell obs get-prefix)
+ifeq ($(PREFIX),)
+  $(error PREFIX not set... please make sure obs is installed.)
+endif
+G_SPEAK_HOME := $(shell obs get-gspeak-home)
+# DESTDIR is set by packaging tools, and is usually empty when running by hand
 ITEMS = client server public node_modules package.json protocol.js README.md
 MODULES = node_modules
 
@@ -32,6 +36,6 @@ package:
 	debuild -b -uc -us -kbuildtools@oblong.com
 
 clean:
-	rm -rf $(MODULES)*
+	rm -rf $(MODULES)* bs-options.dat
 
 # end of file

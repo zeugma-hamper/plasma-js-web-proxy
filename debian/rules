@@ -1,4 +1,30 @@
 #!/usr/bin/make -f
+
+#--- Begin lines edited by ob-set-defaults ---
+# ob-set-defaults is the tool to use to change G_SPEAK_HOME, YOBUILD,
+# PREFIX, and package names suffix etc. properly, such that
+# 'debuild -b' would produce a valid debian package.
+# See "ob-set-defaults --help" (and, if this project has it, ci/ob-set-defaults.conf).
+
+# PREFIX is where this project should be installed.
+# By default, it's the same as G_SPEAK_HOME.
+# To change it independently, do e.g.
+#   ob-set-defaults --g-speak 3.28 --prefix /opt/a-better-place
+# or set PREFIX in ci/ob-set-defaults.conf.
+PREFIX=/opt/oblong/g-speak4.5
+
+# G_SPEAK_HOME is the directory where the g-speak SDK we link against is found.
+# To change the project to link against e.g. g-speak 3.28, do e.g.
+#   ob-set-defaults --g-speak 3.28
+G_SPEAK_HOME=/opt/oblong/g-speak4.5
+
+#--- End lines edited by ob-set-defaults
+
+# Above variables are accessed by lines like the following:
+# buildbot-npm-modules.sh:    export G_SPEAK_HOME=$(obs get-gspeak-home)
+# Makefile:PREFIX := $(shell obs get-prefix)
+# Makefile:G_SPEAK_HOME := $(shell obs get-gspeak-home)
+
 # -*- makefile -*-
 %:
 	dh  $@
