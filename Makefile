@@ -32,6 +32,9 @@ modules: $(MODULES)
 $(MODULES):
 	./buildbot-npm-modules.sh download
 
+check:
+	npm run test
+
 package:
 	debuild -b -uc -us -kbuildtools@oblong.com
 
