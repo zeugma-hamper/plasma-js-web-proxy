@@ -13,6 +13,7 @@ var degrade = require('./degrade-gelatin');
 var SERVICE_NAME = 'plasma-web-proxy';
 var DEFAULT_PORT = '8000';
 var DEFAULT_LOGLEVEL = 'info';
+var LISTEN_START_MS = 15;
 
 function ProxyServer(opts) {
   opts = opts || {};
@@ -33,7 +34,17 @@ function ProxyServer(opts) {
 
   var poolListen = function(conn, pool) {
     this.registrar.registerClientToPeek(conn, pool);
-    conn.write(JSON.stringify([true, message.reqId]));
+    // Adds a pause before reporting pools being successfully opened. There is
+    // no way to get a notification when gelatin fully forms a hose. If success
+    // is reported immediately, then sometimes messages can be sent, processed,
+    // and had their responses returned before the hose has fully opened. In
+    // practice, this is a sufficient wait period for any local pools being
+    // opened.
+    //
+    // See https://bugs.oblong.com/show_bug.cgi?id=19764
+    setTimeout(function() {
+      conn.write(JSON.stringify([true, message.reqId]));
+    }.bind(this), LISTEN_START_MS);
   }.bind(this);
 
   var poolListenNth = function(conn, index, pool) {
