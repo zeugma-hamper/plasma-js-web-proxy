@@ -5,10 +5,13 @@ var mock = require('mock-require');
 var sock;
 var sockSpy = sinon.spy(function() {
   sock = {
+    close: sinon.spy(function() { sock.onclose(); }),
     send: sinon.spy()
   };
   return sock;
 });
+
+var _bindSpy = sinon.spy(_, 'bind');
 
 // Note that if sockjs-client has already been required, this will not work
 // (and the tests will use the actual sockjs client)
@@ -70,6 +73,52 @@ describe('Transport', function() {
       transport.on('close', spy);
       sock.onclose();
       assert(spy.calledOnce);
+    });
+  });
+
+  describe('retry attempts', function() {
+
+    function getStartSpy(transport) {
+      var startSpy = sinon.spy(transport, '_start');
+      return _bindSpy.withArgs(startSpy).reset();
+    }
+
+    afterEach(function() {
+      sock.send.reset();
+      sock.close.reset();
+    });
+
+    it('only retries up to specified amount', function() {
+      var transport = new Transport('someUrl', 2);
+      var startSpy = getStartSpy(transport);
+      sock.close();
+      assert(startSpy.calledOnce);
+      sock.close();
+      assert(startSpy.calledTwice);
+      sock.close();
+      assert(startSpy.calledTwice);
+    });
+
+    it('emits connection fail message when all retries are spent', function() {
+      var transport = new Transport('someUrl', 2);
+      var spy = sinon.spy();
+      transport.on('failed-to-connect', spy);
+      sock.close()
+      assert.equal(spy.callCount, 0);
+      sock.close();
+      assert.equal(spy.callCount, 0);
+      sock.close();
+      assert(spy.calledOnce);
+    });
+
+    it('does not retry if sock closed manually', function() {
+      var transport = new Transport('someUrl', 2);
+      var startSpy = getStartSpy(transport);
+      transport.closeSock()
+      assert.equal(startSpy.callCount, 0);
+      assert(sock.close.calledOnce);
+      sock.close();
+      assert.equal(startSpy.callCount, 0);
     });
   });
 

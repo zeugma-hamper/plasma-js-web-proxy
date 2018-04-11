@@ -4,10 +4,12 @@ var events = require('events');
 
 var SOCKJS_ROUTE = 'sockjs';
 
-function Transport(baseUrl) {
+function Transport(baseUrl, retryAttempts) {
   this._isOpen = false;
   this._queue = [];
   this._numConnects = 0;
+  this._retryAttempts = retryAttempts;
+  this._closedManually = false;
 
   if (baseUrl[baseUrl.length -1] !== '/') {
     baseUrl = baseUrl + '/';
@@ -56,7 +58,15 @@ Transport.prototype.send = function(obj) {
 
 Transport.prototype._onSockClose = function() {
   this._isOpen = false;
+  if (this._closedManually) { return; }
   this.emit('close');
+  if (this._retryAttempts !== undefined) {
+    if (this._retryAttempts <= 0) {
+      return this.emit('failed-to-connect');
+    } else {
+      this._retryAttempts -= 1;
+    }
+  }
   setTimeout(_.bind(this._start, this), this._reconnectDelay);
 };
 
@@ -64,6 +74,13 @@ Transport.prototype._flushQueue = function() {
   _.each(this._queue, this.send, this);
   this._queue = [];
 };
+
+Transport.prototype.closeSock = function() {
+  this._flushQueue();
+  this._retryAttempts = 0;
+  this._closedManually = true;
+  this._sock.close();
+}
 
 module.exports = Transport;
 
