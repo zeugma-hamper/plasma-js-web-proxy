@@ -18,10 +18,12 @@ var _bindSpy = sinon.spy(_, 'bind');
 mock('sockjs-client', sockSpy);
 
 describe('Transport', function() {
+  var Plasma
   var Transport;
   var transport;
 
   before(function() {
+    Plasma = require('../plasma');
     Transport = require('../transport');
   });
 
@@ -89,7 +91,8 @@ describe('Transport', function() {
     });
 
     it('only retries up to specified amount', function() {
-      var transport = new Transport('someUrl', 2);
+      var proxy = Plasma.createProxy('someUrl', 2);
+      var transport = proxy.transport;
       var startSpy = getStartSpy(transport);
       sock.close();
       assert(startSpy.calledOnce);
@@ -100,7 +103,8 @@ describe('Transport', function() {
     });
 
     it('emits connection fail message when all retries are spent', function() {
-      var transport = new Transport('someUrl', 2);
+      var proxy = Plasma.createProxy('someUrl', 2);
+      var transport = proxy.transport;
       var spy = sinon.spy();
       transport.on('failed-to-connect', spy);
       sock.close()
@@ -112,7 +116,8 @@ describe('Transport', function() {
     });
 
     it('does not retry if sock closed manually', function() {
-      var transport = new Transport('someUrl', 2);
+      var proxy = Plasma.createProxy('someUrl', 2);
+      var transport = proxy.transport;
       var startSpy = getStartSpy(transport);
       transport.closeSock()
       assert.equal(startSpy.callCount, 0);

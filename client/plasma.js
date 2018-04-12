@@ -7,8 +7,15 @@ var Hose = require('./hose');
 
 var Plasma = Proxy;
 
-Plasma.createProxy = function(baseUrl) {
-  return new Proxy(baseUrl, Requester, Transport, PoolListener, Hose);
+Plasma.createProxy = function(baseUrl, retryAttempts) {
+  return new Proxy(
+    baseUrl,
+    Requester,
+    Transport,
+    PoolListener,
+    Hose,
+    retryAttempts
+  );
 };
 
 Plasma.WR_ONLY = Hose.WR_ONLY;
