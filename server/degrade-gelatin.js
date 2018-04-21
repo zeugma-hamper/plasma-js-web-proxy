@@ -44,7 +44,7 @@ module.exports = function degrade(input) {
     return input.map(degrade);
   } else if (input !== null && input instanceof Map) {
     return realMap(input, degrade);
-  } else if (input !== null
+  } else if (input !== null && typeof(input) !== 'undefined'
 	  && Object.getPrototypeOf(input) === Object.prototype) {
     return objMap(input, degrade);
   } else if (typeof input === 'string' || typeof input === 'number'
