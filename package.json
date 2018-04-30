@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "dependencies": {
     "browserify": "11.0.0",
-    "gelatin": "0.3.3",
+    "gelatin": "0.4.1",
     "http-server": "0.8.5",
     "js-yaml": "3.3.1",
     "minimist": "1.1.2",
