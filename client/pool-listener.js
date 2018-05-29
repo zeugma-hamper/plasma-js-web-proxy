@@ -1,6 +1,6 @@
-Protocol = require('../protocol.js');
-util = require('util');
-_ = require('underscore');
+var Protocol = require('../protocol.js');
+var util = require('util');
+var _ = require('underscore');
 
 var STATUS = {
   CONNECTED: 'connected',
