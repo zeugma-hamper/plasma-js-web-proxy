@@ -1,6 +1,7 @@
 var assert = require('assert');
 var sinon = require('sinon');
 var mock = require('mock-require');
+var _ = require('underscore');
 
 var sock;
 var sockSpy = sinon.spy(function() {
