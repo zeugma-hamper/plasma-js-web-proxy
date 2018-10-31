@@ -32,7 +32,7 @@ function ProxyServer(opts) {
     this.registrar.pokeDepositors[pool].write(p);
   }.bind(this);
 
-  var poolListen = function(conn, pool) {
+  var poolListen = function(conn, pool, reqId) {
     this.registrar.registerClientToPeek(conn, pool);
     // Adds a pause before reporting pools being successfully opened. There is
     // no way to get a notification when gelatin fully forms a hose. If success
@@ -43,13 +43,13 @@ function ProxyServer(opts) {
     //
     // See https://bugs.oblong.com/show_bug.cgi?id=19764
     setTimeout(function() {
-      conn.write(JSON.stringify([true, message.reqId]));
+      conn.write(JSON.stringify([true, reqId]));
     }.bind(this), LISTEN_START_MS);
   }.bind(this);
 
-  var poolListenNth = function(conn, index, pool) {
+  var poolListenNth = function(conn, index, pool, reqId) {
     this.registrar.registerClientToPeekNth(conn, index, pool);
-    conn.write(JSON.stringify([true, message.reqId]));
+    conn.write(JSON.stringify([true, reqId]));
   }.bind(this);
 
   var poolNth = function(conn, index, pool) {
@@ -82,7 +82,7 @@ function ProxyServer(opts) {
 
   var poolNewestIndex = function(conn, reqId, pool) {
     plasma.newestIndex(pool, function(index) {
-      var msg = Protocol.poolNewestIndexResponse(index, reqId)
+      var msg = Protocol.poolNewestIndexResponse(index, reqId);
       conn.write(JSON.stringify(msg));
     });
   }.bind(this);
@@ -98,7 +98,7 @@ function ProxyServer(opts) {
     conn.on('data', function(text) {
       log.debug('Client message received:', text);
       try {
-        message = JSON.parse(text);
+        var message = JSON.parse(text);
       } catch(e) {
         log.error('Couldn\'t parse message from client "%s": "%s"', conn.id, text);
         return;
@@ -124,13 +124,13 @@ function ProxyServer(opts) {
           poolNewestIndex(conn, message.reqId, message.pool);
           break;
         case ACTIONS.POOL_LISTEN:
-          poolListen(conn, message.pool);
+          poolListen(conn, message.pool, message.reqId);
           break;
         case ACTIONS.POOL_UNLISTEN:
           poolUnlisten(conn, message.pool);
           break;
         case ACTIONS.POOL_LISTEN_NTH:
-          poolListenNth(conn, message.index, message.pool);
+          poolListenNth(conn, message.index, message.pool, message.reqId);
           break;
         default:
           log.warn('Unknown message type "%s" for "%s"', message.action, text);
