@@ -2,4 +2,4 @@ debhelper-build-stamp
 files
 *.log
 *.substvars
-oblong-plasma-web-proxy-gs4.9x
+oblong-plasma-web-proxy-gs5.1x

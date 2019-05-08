@@ -1,4 +1,4 @@
-Source: oblong-plasma-web-proxy-gs4.9x
+Source: oblong-plasma-web-proxy-gs5.1x
 Section: non-free/misc
 Priority: extra
 Maintainer: buildtools <buildtools@oblong.com>
@@ -16,19 +16,19 @@ Build-Depends: debhelper (>= 7),
    nodejs6 (>= 6.11.2) | npm (>= 3.5.2),
 # end nodejs6 boilerplate
 # gelatin requires exactly one version of g-speak to be installed
-   oblong-system-protist4.9,
-   oblong-gs4.9-node-gelatin,
+   oblong-system-protist5.1,
+   oblong-gs5.1-node-gelatin,
 Standards-Version: 3.8.3
 Vcs-Git: git@gitlab.oblong.com:platform/plasma-web-proxy.git
 
-Package: oblong-plasma-web-proxy-gs4.9x
-Provides: oblong-gs4.9-plasma-web-proxy
+Package: oblong-plasma-web-proxy-gs5.1x
+Provides: oblong-gs5.1-plasma-web-proxy
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 # begin nodejs6 boilerplate
          nodejs6 (>= 6.11.2) | nodejs (>= 6.11.2),
 # end nodejs6 boilerplate
-	 oblong-system-protist4.9,
-         oblong-gs4.9-node-gelatin,
+	 oblong-system-protist5.1,
+         oblong-gs5.1-node-gelatin,
 Description: Allows listening / depositing to pools via an HTTP and Websocket interface.
