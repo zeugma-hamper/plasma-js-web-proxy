@@ -83,12 +83,12 @@ describe('Transport', function() {
 
     function getStartSpy(transport) {
       var startSpy = sinon.spy(transport, '_start');
-      return _bindSpy.withArgs(startSpy).reset();
+      return _bindSpy.withArgs(startSpy).resetHistory();
     }
 
     afterEach(function() {
-      sock.send.reset();
-      sock.close.reset();
+      sock.send.resetHistory();
+      sock.close.resetHistory();
     });
 
     it('only retries up to specified amount', function() {

@@ -15,6 +15,11 @@ Build-Depends: debhelper (>= 7),
    nodejs6 (>= 6.11.2) | nodejs (>= 6.11.2),
    nodejs6 (>= 6.11.2) | npm (>= 3.5.2),
 # end nodejs6 boilerplate
+# gelatin needs to build python
+   pkg-config,
+   python3,
+# FIXME: change to python3-dev once node-gyp is ported to python3?
+   python-dev,
 # gelatin requires exactly one version of g-speak to be installed
    oblong-system-protist5.5,
    oblong-gs5.5-node-gelatin,
