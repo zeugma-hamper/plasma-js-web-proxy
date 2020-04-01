@@ -1,5 +1,6 @@
-{ "name": "plasma-web-proxy",
-  "version": "0.0.1",
+{
+  "name": "plasma-web-proxy",
+  "version": "1.0.0",
   "dependencies": {
     "browserify": "11.0.0",
     "gelatin": "0.4.1",
@@ -9,7 +10,6 @@
     "mocha": "2.3.3",
     "mock-require": "1.2.0",
     "node-static": "0.7.6",
-    "plasma-js-bridge": "0.1.15",
     "sinon": "1.17.1",
     "sockjs": "0.3.15",
     "sockjs-client": "1.0.2",
