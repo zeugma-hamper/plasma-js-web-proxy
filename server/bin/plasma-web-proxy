@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 var parseArgs = require('minimist');
-var ProxyServer = require('../server.js');
+var ProxyServer = require('../server-gelatin.js');
 
 var argv = parseArgs(process.argv);
-
-if(argv.gelatin) {
-  ProxyServer = require('../server-gelatin.js');
-}
 
 new ProxyServer({
   port: argv.port,

@@ -159,7 +159,7 @@ describe('PoolListener', function() {
     it('sends connect requests for all disconnected pools', function() {
       var callback = function() {};
       listener.addPoolListener('test-pool', callback);
-      requester.connect.reset();
+      requester.connect.resetHistory();
       listener.setDisconnected();
       listener.reconnectAll();
       assert(requester.connect.calledOnce);

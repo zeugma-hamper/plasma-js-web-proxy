@@ -29,7 +29,10 @@ function ProxyServer(opts) {
   var poolDeposit = function(conn, descrips, ingests, pool) {
     this.registrar.registerClientToPoke(conn, pool);
     let p = new gelatin.Protein(descrips, ingests);
-    this.registrar.pokeDepositors[pool].write(p);
+    if (this.registrar.pokeDepositors && this.registrar.pokeDepositors[pool]
+          && this.registrar.pokeDepositors[pool].write) {
+      this.registrar.pokeDepositors[pool].write(p);
+    }
   }.bind(this);
 
   var poolListen = function(conn, pool, reqId) {

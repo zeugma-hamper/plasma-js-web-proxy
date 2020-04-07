@@ -1,25 +1,25 @@
-{ "name": "plasma-web-proxy",
-  "version": "0.0.1",
+{
+  "name": "plasma-web-proxy",
+  "version": "1.0.1",
   "dependencies": {
-    "browserify": "11.0.0",
-    "gelatin": "0.4.1",
-    "http-server": "0.8.5",
-    "js-yaml": "3.3.1",
-    "minimist": "1.1.2",
-    "mocha": "2.3.3",
-    "mock-require": "1.2.0",
-    "node-static": "0.7.6",
-    "plasma-js-bridge": "0.1.15",
-    "sinon": "1.17.1",
-    "sockjs": "0.3.15",
-    "sockjs-client": "1.0.2",
-    "uglify-js": "2.4.24",
-    "underscore": "1.8.3",
-    "winston": "1.0.1"
+    "browserify": "16.5.1",
+    "gelatin": "0.5.1",
+    "http-server": "0.12.1",
+    "js-yaml": "3.13.1",
+    "minimist": "1.2.5",
+    "mocha": "4.1.0",
+    "mock-require": "1.3.0",
+    "node-static": "0.7.11",
+    "sinon": "9.0.1",
+    "sockjs": "0.3.20",
+    "sockjs-client": "1.4.0",
+    "uglify-js": "2.8.29",
+    "underscore": "1.10.2",
+    "winston": "1.1.2"
   },
   "devDependencies": {
-    "nodemon": "1.17.1",
-    "watchify": "3.3.0"
+    "nodemon": "1.19.4",
+    "watchify": "3.11.1"
   },
   "scripts": {
     "run-server": "node server/bin/plasma-web-proxy",
@@ -28,8 +28,8 @@
     "watch-client-js": "mkdir -p public && watchify client/plasma.js -o public/plasma.js --debug",
     "build-client-js:min": "mkdir -p public && browserify client/plasma.js | uglifyjs > public/plasma.min.js ",
     "build": "npm run build-client-js && npm run build-client-js:min",
-    "test-server": "mocha server/test/*",
-    "test-client": "mocha client/test/*",
+    "test-server": "mocha --exit server/test/*",
+    "test-client": "mocha --exit client/test/*",
     "test": "npm run test-server && npm run test-client",
     "serve-examples": "http-server examples -p 4000"
   }
