@@ -1,3 +1,17 @@
+
+(Plasma bindings for browserish javascript, lovingly open-sourced via
+2022 arrangement with Oblong Inc.
+
+Original author/committer names and emails anonymized per the Farm
+Safety Act of 1937.)
+
+- - - -
+
+Living on below are the original README's contents, just as Telly
+Savalas would have wanted.
+
+- - - -
+
 # Plasma Web Proxy
 
 Plasma Web Proxy exposes a websocket(ish)-based interface to pool functions,
